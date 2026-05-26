@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Upload Quotation — CMech{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <i class="bi bi-cloud-upload-fill"></i> Upload Quotation
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header">
+        <i class="bi bi-file-earmark-excel me-2"></i>New Price Quotation
+      </div>
+      <div class="card-body p-4">
+        <form method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data">
+
+          <div class="mb-3">
+            <label class="form-label" for="car_model">Car Model</label>
+            <input type="text" class="form-control" id="car_model" name="car_model"
+                   placeholder="e.g. Toyota Fortuner 2022" required>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-sm-6">
+              <label class="form-label" for="quotation_number">Quotation Number</label>
+              <input type="text" class="form-control" id="quotation_number" name="quotation_number"
+                     placeholder="e.g. QT-2024-0087" required>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label" for="quotation_date">Quotation Date</label>
+              <input type="date" class="form-control" id="quotation_date" name="quotation_date" required>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label" for="excel_file">Excel File</label>
+            <input type="file" class="form-control" id="excel_file" name="excel_file"
+                   accept=".xls,.xlsx" required>
+            <div class="mt-2" style="font-size:.82rem; color:var(--muted);">
+              <i class="bi bi-info-circle me-1"></i>
+              The file must have columns named <strong style="color:var(--text);">Parts</strong>
+              and <strong style="color:var(--text);">Price</strong> (case-insensitive).
+            </div>
+          </div>
+
+          <button type="submit" class="btn-brand">
+            <i class="bi bi-upload me-2"></i>Save to Price Book
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card h-100">
+      <div class="card-header"><i class="bi bi-lightbulb me-2"></i>How it works</div>
+      <div class="card-body p-4">
+        <ol style="padding-left:1.2rem; line-height:2; color:var(--muted);">
+          <li>Enter the <span style="color:var(--text);font-weight:600;">Car Model</span> and a unique <span style="color:var(--text);font-weight:600;">Quotation Number</span>.</li>
+          <li>Pick the date the quote was received.</li>
+          <li>Upload the supplier's Excel file — every row becomes a saved price entry.</li>
+          <li>Use <span style="color:var(--brand);font-weight:600;">Check Prices</span> later to look up any part across all stored quotes.</li>
+        </ol>
+
+        <hr style="border-color:var(--border); margin: 1.25rem 0;">
+
+        <div style="font-size:.85rem; color:var(--muted);">
+          <div class="mb-2"><strong style="color:var(--text);">Required Excel columns:</strong></div>
+          <div class="d-flex gap-2 flex-wrap">
+            <span style="background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:.25rem .75rem;font-family:monospace;color:var(--brand);">Parts</span>
+            <span style="background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:.25rem .75rem;font-family:monospace;color:var(--brand);">Price</span>
+          </div>
+          <div class="mt-2">All other columns are ignored.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

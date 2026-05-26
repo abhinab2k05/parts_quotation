@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Car Models — CMech{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <i class="bi bi-car-front-fill"></i> Car Models
+</div>
+
+{% if models %}
+<div class="row g-3">
+  {% for m in models %}
+  <div class="col-sm-6 col-lg-4">
+    <a href="{{ url_for('search', car_model=m.car_model) }}"
+       style="text-decoration:none;">
+      <div class="card h-100" style="transition:border-color .2s, transform .15s;"
+           onmouseover="this.style.borderColor='var(--brand)';this.style.transform='translateY(-3px)'"
+           onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)'">
+        <div class="card-body p-4">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.25rem;font-weight:700;color:var(--text);margin-bottom:.75rem;line-height:1.2;">
+            {{ m.car_model }}
+          </div>
+
+          <div class="d-flex gap-3 flex-wrap" style="font-size:.83rem;">
+            <div>
+              <div style="color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px;font-size:.73rem;">Quotations</div>
+              <div style="color:var(--brand);font-weight:700;font-size:1.15rem;">{{ m.quotation_count }}</div>
+            </div>
+            <div>
+              <div style="color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px;font-size:.73rem;">Parts Stored</div>
+              <div style="color:var(--text);font-weight:700;font-size:1.15rem;">{{ m.parts_count }}</div>
+            </div>
+            <div>
+              <div style="color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px;font-size:.73rem;">Latest Quote</div>
+              <div style="color:var(--text);font-weight:600;font-size:.88rem;">{{ m.latest_date.strftime('%d %b %Y') }}</div>
+            </div>
+          </div>
+
+          <div style="margin-top:1rem;font-size:.8rem;color:var(--brand);font-weight:600;">
+            View Prices <i class="bi bi-arrow-right"></i>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+<div class="card">
+  <div class="card-body p-5 text-center" style="color:var(--muted);">
+    <i class="bi bi-inbox" style="font-size:3rem;display:block;margin-bottom:1rem;"></i>
+    <div style="font-size:1.1rem;font-weight:600;">No data yet</div>
+    <div style="font-size:.9rem;margin-top:.4rem;">
+      Upload your first quotation to start building the price book.
+    </div>
+    <a href="{{ url_for('upload') }}" class="btn-brand d-inline-block mt-3" style="text-decoration:none;padding:.6rem 1.5rem;">
+      <i class="bi bi-upload me-1"></i> Upload Quotation
+    </a>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

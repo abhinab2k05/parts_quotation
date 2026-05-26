@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Check Prices — CMech{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <i class="bi bi-search"></i> Check Prices
+</div>
+
+<!-- Filter card -->
+<div class="card mb-4">
+  <div class="card-header"><i class="bi bi-funnel me-2"></i>Filter</div>
+  <div class="card-body p-4">
+    <form method="GET" action="{{ url_for('search') }}">
+      <div class="row g-3 align-items-end">
+
+        <div class="col-sm-4">
+          <label class="form-label" for="car_model">Car Model</label>
+          {% if all_models %}
+          <select class="form-select" id="car_model" name="car_model">
+            <option value="">— All Models —</option>
+            {% for m in all_models %}
+            <option value="{{ m }}" {% if car_model == m %}selected{% endif %}>{{ m }}</option>
+            {% endfor %}
+          </select>
+          {% else %}
+          <input type="text" class="form-control" id="car_model" name="car_model"
+                 value="{{ car_model }}" placeholder="e.g. Fortuner">
+          {% endif %}
+        </div>
+
+        <div class="col-sm-4">
+          <label class="form-label" for="part_name">Part Name</label>
+          <input type="text" class="form-control" id="part_name" name="part_name"
+                 value="{{ part_name }}" placeholder="e.g. Air Filter">
+        </div>
+
+        <div class="col-sm-3">
+          <label class="form-label" for="quote_no">Quotation No.</label>
+          <input type="text" class="form-control" id="quote_no" name="quote_no"
+                 value="{{ quote_no }}" placeholder="e.g. QT-2024-0087">
+        </div>
+
+        <div class="col-sm-1 d-flex gap-2">
+          <button type="submit" class="btn-brand w-100" title="Search">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+
+      </div>
+
+      {% if car_model or part_name or quote_no %}
+      <div class="mt-3">
+        <a href="{{ url_for('search') }}" style="font-size:.85rem;color:var(--muted);text-decoration:none;">
+          <i class="bi bi-x-circle me-1"></i>Clear filters
+        </a>
+      </div>
+      {% endif %}
+    </form>
+  </div>
+</div>
+
+<!-- Results -->
+{% if results %}
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span><i class="bi bi-table me-2"></i>Results</span>
+    <span style="font-size:.82rem;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;">
+      {{ results|length }} row{{ 's' if results|length != 1 }}
+    </span>
+  </div>
+  <div style="overflow-x:auto;">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Part Name</th>
+          <th>Price</th>
+          <th>Car Model</th>
+          <th>Quotation No.</th>
+          <th>Quote Date</th>
+          <th>Saved On</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in results %}
+        <tr>
+          <td style="font-weight:500; color:#E4E6F0;">{{ r.part_name }}</td>
+          <td style="font-weight:500; color:#40d547;" class="price-badge">₹ {{ '{:,.2f}'.format(r.price) }}</td>
+          <td style="font-weight:500; color:#6888a7;">{{ r.car_model }}</td>
+          <td style="color:var(--muted);font-size:.88rem;">{{ r.quotation_number }}</td>
+          <td style="color:var(--muted);font-size:.88rem;">{{ r.quotation_date.strftime('%d %b %Y') }}</td>
+          <td style="color:var(--muted);font-size:.83rem;">{{ r.created_at.strftime('%d %b %Y') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% elif request.args %}
+<!-- Filters applied but nothing found -->
+<div class="card">
+  <div class="card-body p-5 text-center" style="color:var(--muted);">
+    <i class="bi bi-binoculars" style="font-size:2.5rem;display:block;margin-bottom:.75rem;"></i>
+    <div style="font-weight:600;font-size:1rem;">No matching parts found</div>
+    <div style="font-size:.88rem;margin-top:.3rem;">Try broadening your search.</div>
+  </div>
+</div>
+
+{% else %}
+<!-- No filters yet -->
+<div class="card">
+  <div class="card-body p-5 text-center" style="color:var(--muted);">
+    <i class="bi bi-search" style="font-size:2.5rem;display:block;margin-bottom:.75rem;"></i>
+    <div style="font-weight:600;font-size:1rem;">Enter filters above to check prices</div>
+    <div style="font-size:.88rem;margin-top:.3rem;">Search by car model, part name, or quotation number.</div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
