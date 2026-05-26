@@ -50,7 +50,7 @@ def login():
     if request.method == 'POST':
         if request.form.get('password') == PASSWORD:
             session['authenticated'] = True
-            return redirect(url_for('upload'))
+            return redirect(url_for('models'))
         flash('Incorrect password. Please try again.')
     return render_template('login.html')
 
@@ -201,27 +201,6 @@ def search():
         quote_no=quote_no,
     )
 
-@app.route('/run-migration')
-def run_migration():
-    try:
-        db.session.execute(db.text("""
-            ALTER TABLE parts_inventory 
-            ADD COLUMN IF NOT EXISTS quotation_date DATE;
-        """))
-        db.session.execute(db.text("""
-            ALTER TABLE parts_inventory 
-            ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW();
-        """))
-        db.session.execute(db.text("""
-            UPDATE parts_inventory 
-            SET quotation_date = CURRENT_DATE 
-            WHERE quotation_date IS NULL;
-        """))
-        db.session.commit()
-        return "Migration successful! Columns added. You can delete this route now."
-    except Exception as e:
-        db.session.rollback()
-        return f"Error: {e}"
-    
+
 if __name__ == '__main__':
     app.run(debug=True)
